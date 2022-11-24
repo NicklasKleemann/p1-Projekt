@@ -19,6 +19,7 @@ void printArr(char ** arr){
         if(j>1)printf(" ");
     }
 }
+//HejS
 
 int main(int argc, char **argv){
     FILE *Original;
