@@ -115,7 +115,7 @@ int main(int argc, char **argv)
 
     double matches = compareFiles(text1, text2, EOT1, EOT2, Synonymer);
     double plagiat = matches / EOC * 100;
-    printf("\nComparision between the files: We found matches on \033[1;34m%.0lf \033[0;34mout of \033[1;34m%d\033[0m words. Resulting in a plagerize score of: \033[4;31;1m%lf%%\033[0m\n\n",matches, EOC, plagiat);
+    printf("\nComparision between the files: We found matches on \033[1;34m%.0lf \033[0;34mout of \033[1;34m%d\033[0m words.\nResulting in a plagerize score of: \033[4;31;1m%lf%%\033[0m\n",matches, EOC, plagiat);
     printf("\n##############################################################################\n");
     fclose(Test);
     fclose(Kontrol);
