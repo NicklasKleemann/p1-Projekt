@@ -12,7 +12,7 @@ int ConstructArray(char arr[][20], FILE *file)
         do
         {
             c = fgetc(file);
-            if (c == ' ' || c == EOF) /* Optimering gjort her, uden c == EOF, -0\ i sidste ord og kan derfor ikke bruges som string */
+            if (isspace(c)|| c == EOF) /* Optimering gjort her, uden c == EOF, -0\ i sidste ord og kan derfor ikke bruges som string */
             {
                 arr[i][j] = '\0';
             }
@@ -20,25 +20,26 @@ int ConstructArray(char arr[][20], FILE *file)
             {
                 arr[i][j] = c;
             }
+
             j++;
-        } while (j < 20 && c != ' ');
+        } while (j < 20 && !isspace(c) && c != EOF);
         j = 0;
     }
     return i;
 }
-void printArr(char arr[][20], int stop_i, char * name)
+void printArr(char arr[][20], int stop_i, char * name)// PRINT INPUT FILE AND CONTROL FILE
 {
     int i, j;
-    printf("\033[1;33m%s\033[0m:\n", name);
+    printf("\033[1;33m%s\033[0m:\n", name); // NAME OF EACH FILE
     for (i = 0; i < 128 && i != stop_i; ++i)
     {
           printf("\033[4m%s", arr[i]);
           printf(" \033[0m"); 
     }
-    printf("\n");
+    printf("\n"); 
 }
 
-void loadSynListe(FILE *file, char arr[][256]){
+void loadSynListe(FILE *file, char arr[][256]){ // LOAD SYNONYM LIST INTO ARRAY
     int line = 0;
     while (!feof(file) && !ferror(file)) {
         if (fgets(arr[line], 256, file) != NULL) {
@@ -50,12 +51,11 @@ void loadSynListe(FILE *file, char arr[][256]){
 int SynCheck(char * ord, char * ord2, char SynListe[][256]){
     int line_number = 0;
     
-
-    while(strstr(SynListe[line_number], ord) == NULL && line_number < 128) {
+    while(strstr(SynListe[line_number], ord) == NULL && line_number < 128) { // FIND "ord" FROM SYNLISTE
         line_number++;
     }
 
-    if(strstr(SynListe[line_number], ord2) != NULL) {
+    if(strstr(SynListe[line_number], ord2) != NULL) { // FIND "ord2" FROM SYNLISTE WHICH MATCHES THE SAME INDEX AS "ord"
         return 1;
     } else {
         return 0;
@@ -66,15 +66,27 @@ double compareFiles(char arr1[][20], char arr2[][20], int EOT1, int EOT2, char S
 {
     printf("\nComparing files...\n");
     int counter = 0, syncounter = 0;
+    int j = 0; 
 
-    for (int i = 0; i < EOT1 && i < EOT2; ++i)
+    for (int i = 0; i < EOT1 && i < EOT2; ++i) //REMOVE PUNCTUATION FROM WORDS BEFORE COMPARING
     {
-        if (strcmp(arr1[i], arr2[i]) == 0)
+        for(j = 0; arr1[i][j] != '\0'; j++) {
+            if(ispunct(arr1[i][j]) || arr1[i][j] == '\n') {
+            arr1[i][j] = '\0';
+            }
+        }
+
+        for(j = 0; arr2[i][j] != '\0'; j++) {
+            if(ispunct(arr2[i][j]) || arr2[i][j] == '\n') {
+            arr2[i][j] = '\0';
+            }
+        }
+        if (strcmp(arr1[i], arr2[i]) == 0) //CHECK SIMILARITY
         {
             counter++;
         }
         else{
-            if(SynCheck(arr1[i], arr2[i], Syn) == 1) {
+            if(SynCheck(arr1[i], arr2[i], Syn) == 1) { //CHECK SYNONYM EVERY DIFFERENCE
                 counter++;
                 syncounter++;
                 printf("\033[1;32m%s\033[0;32m and\033[1;32m %s\033[0;32m are synonyms\033[0m\n", arr1[i], arr2[i]);
