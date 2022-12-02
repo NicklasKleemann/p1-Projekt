@@ -128,6 +128,11 @@ int main(int argc, char **argv)
     FILE *Kontrol = fopen("t2.txt", "r");
     FILE *SynListe = fopen("SynListe.txt", "r"); // Synonym liste
 
+    if(Test != NULL && Kontrol != NULL && SynListe != NULL){
+        printf("FILE ERROR\n");
+        exit(-1);
+    }
+
     char text1[128][20]; // Mængde af ord og max længde på ord
     char text2[128][20];
     char Synonymer[128][256];
