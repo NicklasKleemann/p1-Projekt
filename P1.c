@@ -128,8 +128,8 @@ int main(int argc, char **argv)
     FILE *Kontrol = fopen("t2.txt", "r");
     FILE *SynListe = fopen("SynListe.txt", "r"); // Synonym liste
 
-    if(Test != NULL && Kontrol != NULL && SynListe != NULL){
-        printf("FILE ERROR\n");
+    if(Test == NULL || Kontrol == NULL || SynListe == NULL){
+        perror("FILE ERROR\n");
         exit(-1);
     }
 
