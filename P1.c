@@ -119,6 +119,23 @@ double compareFiles(char arr1[][20], char arr2[][20], int EOT1, int EOT2, char S
     return counter;
 }
 
+void Dynamic(FILE * fp, int  * rows, int * cols)
+{
+    int counter = 0;
+    while (!feof(fp)){
+        while(!isspace(fgetc(fp))) {
+            counter++;
+            if(counter > *cols) {
+                *cols = counter;
+            }
+        }
+        *rows++;
+        counter = 0; 
+    }
+
+    rewind(fp);
+}
+
 int main(int argc, char **argv)
 {
     int EOT1 = 0, EOT2 = 0, EOC = 0; // End OF text 1 & 2 and End of comparison.
