@@ -3,18 +3,18 @@
 #include <ctype.h>
 #include <string.h>
 
-int ConstructArray(char arr[][20], FILE *file)
+void ConstructArray(int rows, int cols, FILE *file, char arr[][cols])
 {
     char c;
     int i, j = 0;
-    for (i = 0; i < 128 && !feof(file); ++i)
+    for (i = 0; i < rows && !feof(file); ++i)
     {
         do
         {
             c = fgetc(file);
             if (isspace(c) || c == EOF) /* Optimering gjort her, uden c == EOF, -0\ i sidste ord og kan derfor ikke bruges som string */
             {
-                if (c == '\n' && j < 19)
+                if (c == '\n' && j < cols)
                 {
                     arr[i][j] = c;
                     arr[i][j + 1] = '\0';
@@ -30,16 +30,16 @@ int ConstructArray(char arr[][20], FILE *file)
             }
 
             j++;
-        } while (j < 20 && !isspace(c) && c != EOF);
+        } while (j < cols && !isspace(c) && c != EOF);
         j = 0;
     }
-    return i;
 }
-void printArr(char arr[][20], int stop_i, char *name) // PRINT INPUT FILE AND CONTROL FILE
+
+void printArr(int rows, int cols, char arr[][cols], char *name) // PRINT INPUT FILE AND CONTROL FILE
 {
     int i;
     printf("\033[1;33m%s\033[0m:\n", name); // NAME OF EACH FILE
-    for (i = 0; i < 128 && i != stop_i; ++i)
+    for (i = 0; i < rows; ++i)
     {
         printf(" ");
         printf("%s", arr[i]);
@@ -78,13 +78,13 @@ int SynCheck(char *ord, char *ord2, char SynListe[][256])
     }
 }
 
-double compareFiles(char arr1[][20], char arr2[][20], int EOT1, int EOT2, char Syn[][256])
+double compareFiles(int row1, int row2, int col1, int col2, char arr1[row1][col1], char arr2[row2][col2], char Syn[][256])
 {
     printf("\nComparing files...\n");
     int counter = 0, syncounter = 0;
     int j = 0;
 
-    for (int i = 0; i < EOT1 && i < EOT2; ++i) // REMOVE PUNCTUATION FROM WORDS BEFORE COMPARING
+    for (int i = 0; i < 8; ++i) // REMOVE PUNCTUATION FROM WORDS BEFORE COMPARING
     {
         for (j = 0; arr1[i][j] != '\0'; j++)
         {
@@ -93,6 +93,11 @@ double compareFiles(char arr1[][20], char arr2[][20], int EOT1, int EOT2, char S
                 arr1[i][j] = '\0';
             }
         }
+        /*
+        if(ispunct(arr1[i][strlen(arr1[i])]) || arr1[i][strlen(arr1[i])] == '\n'){
+            arr1[i][strlen(arr1[i])]= '\0';
+        }
+        */
 
         for (j = 0; arr2[i][j] != '\0'; j++)
         {
@@ -114,64 +119,75 @@ double compareFiles(char arr1[][20], char arr2[][20], int EOT1, int EOT2, char S
                 printf("\033[1;32m%s\033[0;32m and\033[1;32m %s\033[0;32m are synonyms\033[0m\n", arr1[i], arr2[i]);
             }
         }
+        printf("\nROWS:%d", i);
     }
     printf("\nFound a total of\033[1;32m %d\033[0m synonym exchanges", syncounter);
     return counter;
 }
 
-void Dynamic(FILE * fp, int  * rows, int * cols)
+void dynamicFileTable(FILE *f, int *rows, int *cols)
 {
     int counter = 0;
-    while (!feof(fp)){
-        while(!isspace(fgetc(fp))) {
+    char c;
+    while (!feof(f))
+    {
+        do
+        {
+            c = fgetc(f);
             counter++;
-            if(counter > *cols) {
+            if (counter > *cols)
+            {
                 *cols = counter;
             }
-        }
-        *rows++;
-        counter = 0; 
+        } while (!isspace(c) && c != EOF);
+        counter = 0;
+        *rows += 1;
     }
-
-    rewind(fp);
+    printf("\n%d rows \n%d cols\n", *rows, *cols);
+    rewind(f);
 }
 
 int main(int argc, char **argv)
 {
-    int EOT1 = 0, EOT2 = 0, EOC = 0; // End OF text 1 & 2 and End of comparison.
+    int EOC = 0; // End OF text 1 & 2 and End of comparison.
+    int row1 = 0, row2 = 0, row3 = 0;
+    int col1 = 0, col2 = 0, col3 = 0;
 
     // FILE COMPARE
     FILE *Test = fopen("t1.txt", "r");
     FILE *Kontrol = fopen("t2.txt", "r");
     FILE *SynListe = fopen("SynListe.txt", "r"); // Synonym liste
 
-    if(Test == NULL || Kontrol == NULL || SynListe == NULL){
+    if (Test == NULL || Kontrol == NULL || SynListe == NULL)
+    {
         perror("FILE ERROR\n");
         exit(-1);
     }
 
-    char text1[128][20]; // Mængde af ord og max længde på ord
-    char text2[128][20];
-    char Synonymer[128][256];
+    dynamicFileTable(Test, &row1, &col1);
+    dynamicFileTable(Kontrol, &row2, &col2);
+
+    char text1[row1+1][col1+1]; // Mængde af ord og max længde på ord
+    char text2[row2+1][col2+1];
+    char Synonymer[120][256];
 
     loadSynListe(SynListe, Synonymer);
-
     printf("\n##############################################################################\n");
-    EOT1 = ConstructArray(text1, Test);
-    printArr(text1, EOT1, "\nInput text");
-    EOT2 = ConstructArray(text2, Kontrol);
-    printArr(text2, EOT2, "Kontrol text");
+    ConstructArray(row1, col1, Test, text1);
+    printArr(row1, col1, text1, "\nInput text");
+    ConstructArray(row2, col2, Kontrol, text2);
+    printArr(row2, col2, text2, "Kontrol text");
 
-    if (EOT1 > EOT2)
+    if (row1 > row2)
     {
-        EOC = EOT2;
+        EOC = row2;
     }
     else
     {
-        EOC = EOT1;
+        EOC = row1;
     }
 
-    double matches = compareFiles(text1, text2, EOT1, EOT2, Synonymer);
+    double matches = compareFiles(row1, row2, col1, col2, text1, text2, Synonymer);
     double plagiat = matches / EOC * 100;
     printf("\nComparision between the files: We found matches on \033[1;34m%.0lf \033[0;34mout of \033[1;34m%d\033[0m words.\nResulting in a plagerize score of: \033[4;31;1m%lf%%\033[0m\n", matches, EOC, plagiat);
     printf("\n##############################################################################\n");
