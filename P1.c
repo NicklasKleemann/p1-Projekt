@@ -85,14 +85,12 @@ double compareFiles(int row1, int row2, int col1, int col2, char arr1[row1][col1
     int j = 0;
 
     for (int i = 0; i < 8; ++i) // REMOVE PUNCTUATION FROM WORDS BEFORE COMPARING
-    {
-        if (ispunct(arr1[i][strlen(arr1[i]) - 1]) || arr1[i][strlen(arr1[i]) - 1] == '\n')
-        {
-            arr1[i][strlen(arr1[i]) - 1] = '\0';
+    {        
+        if(ispunct(arr1[i][strlen(arr1[i])-1]) || arr1[i][strlen(arr1[i])-1] == '\n'){
+            arr1[i][strlen(arr1[i])-1]= '\0';
         }
-        if (ispunct(arr2[i][strlen(arr2[i]) - 1]) || arr2[i][strlen(arr2[i]) - 1] == '\n')
-        {
-            arr2[i][strlen(arr2[i]) - 1] = '\0';
+        if(ispunct(arr2[i][strlen(arr2[i])-1]) || arr2[i][strlen(arr2[i])-1] == '\n'){
+            arr2[i][strlen(arr2[i])-1]= '\0';
         }
 
         if (strcmp(arr1[i], arr2[i]) == 0) // CHECK SIMILARITY
@@ -113,39 +111,24 @@ double compareFiles(int row1, int row2, int col1, int col2, char arr1[row1][col1
     return counter;
 }
 
-void dynamicFileTable(FILE *f, int *rows, int *cols, int isSym)
+void dynamicFileTable(FILE *f, int *rows, int *cols)
 {
     int counter = 0;
-    char ch = fgetc(f);
-    while (ch != EOF)
+    char c;
+    while (!feof(f))
     {
-        counter++;
-
-        if (counter > *cols)
+        do
         {
-            *cols = counter;
-        }
-
-        switch (isSym)
-        {
-        case 0:
-            if (isspace(ch))
+            c = fgetc(f);
+            counter++;
+            if (counter > *cols)
             {
-                counter = 0;
-                *rows +=1;
+                *cols = counter;
             }
-            break;
-        case 1:
-            if (ch == '\n')
-            {
-                counter = 0;
-                *rows +=1;
-            }
-            break;
-        }
-        ch = fgetc(f);
+        } while (!isspace(c) && c != EOF);
+        counter = 0;
+        *rows += 1;
     }
-
     printf("\n%d rows \n%d cols\n", *rows, *cols);
     rewind(f);
 }
@@ -153,8 +136,8 @@ void dynamicFileTable(FILE *f, int *rows, int *cols, int isSym)
 int main(int argc, char **argv)
 {
     int EOC = 0; // End OF text 1 & 2 and End of comparison.
-    int row1 = 1, row2 = 1, row3 = 1;
-    int col1 = 1, col2 = 1, col3 = 1;
+    int row1 = 0, row2 = 0, row3 = 0;
+    int col1 = 0, col2 = 0, col3 = 0;
 
     // FILE COMPARE
     FILE *Test = fopen("t1.txt", "r");
@@ -167,13 +150,12 @@ int main(int argc, char **argv)
         exit(-1);
     }
 
-    dynamicFileTable(Test, &row1, &col1, 0);
-    dynamicFileTable(Kontrol, &row2, &col2, 0);
-    dynamicFileTable(SynListe, &row3, &col3, 1);
+    dynamicFileTable(Test, &row1, &col1);
+    dynamicFileTable(Kontrol, &row2, &col2);
 
-    char text1[row1 + 1][col1 + 1]; // Mængde af ord og max længde på ord
-    char text2[row2 + 1][col2 + 1];
-    char Synonymer[row3 + 1][col3 + 1];
+    char text1[row1+1][col1+1]; // Mængde af ord og max længde på ord
+    char text2[row2+1][col2+1];
+    char Synonymer[120][256];
 
     loadSynListe(SynListe, Synonymer);
     printf("\n##############################################################################\n");
