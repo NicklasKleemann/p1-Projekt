@@ -66,17 +66,14 @@ int SynCheck(char *ord, char *ord2, char SynListe[][256])
     while (strstr(SynListe[line_number], ord) == NULL && line_number < 2)
     { // FIND "ord" FROM SYNLISTE
         line_number++;
-        printf("SynLinjeCount");
     }
 
     if (strstr(SynListe[line_number], ord2) != NULL)
     { // FIND "ord2" FROM SYNLISTE WHICH MATCHES THE SAME INDEX AS "ord"
-        printf("Syn Fundet");
         return 1;
     }
     else
     {
-        printf("Syn ikke fundet");
         return 0;
     }
 }
@@ -88,27 +85,14 @@ double compareFiles(int row1, int row2, int col1, int col2, char arr1[row1][col1
     int j = 0;
 
     for (int i = 0; i < 8; ++i) // REMOVE PUNCTUATION FROM WORDS BEFORE COMPARING
-    {
-        for (j = 0; arr1[i][j] != '\0'; j++)
-        {
-            if (ispunct(arr1[i][j]) || arr1[i][j] == '\n')
-            {
-                arr1[i][j] = '\0';
-            }
+    {        
+        if(ispunct(arr1[i][strlen(arr1[i])-1]) || arr1[i][strlen(arr1[i])-1] == '\n'){
+            arr1[i][strlen(arr1[i])-1]= '\0';
         }
-        /*
-        if(ispunct(arr1[i][strlen(arr1[i])]) || arr1[i][strlen(arr1[i])] == '\n'){
-            arr1[i][strlen(arr1[i])]= '\0';
+        if(ispunct(arr2[i][strlen(arr2[i])-1]) || arr2[i][strlen(arr2[i])-1] == '\n'){
+            arr2[i][strlen(arr2[i])-1]= '\0';
         }
-        */
 
-        for (j = 0; arr2[i][j] != '\0'; j++)
-        {
-            if (ispunct(arr2[i][j]) || arr2[i][j] == '\n')
-            {
-                arr2[i][j] = '\0';
-            }
-        }
         if (strcmp(arr1[i], arr2[i]) == 0) // CHECK SIMILARITY
         {
             counter++;
@@ -122,7 +106,6 @@ double compareFiles(int row1, int row2, int col1, int col2, char arr1[row1][col1
                 printf("\033[1;32m%s\033[0;32m and\033[1;32m %s\033[0;32m are synonyms\033[0m\n", arr1[i], arr2[i]);
             }
         }
-        printf("\nROWS:%d", i);
     }
     printf("\nFound a total of\033[1;32m %d\033[0m synonym exchanges", syncounter);
     return counter;
