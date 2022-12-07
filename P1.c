@@ -63,17 +63,20 @@ int SynCheck(char *ord, char *ord2, char SynListe[][256])
 {
     int line_number = 0;
 
-    while (strstr(SynListe[line_number], ord) == NULL && line_number < 128)
+    while (strstr(SynListe[line_number], ord) == NULL && line_number < 2)
     { // FIND "ord" FROM SYNLISTE
         line_number++;
+        printf("SynLinjeCount");
     }
 
     if (strstr(SynListe[line_number], ord2) != NULL)
     { // FIND "ord2" FROM SYNLISTE WHICH MATCHES THE SAME INDEX AS "ord"
+        printf("Syn Fundet");
         return 1;
     }
     else
     {
+        printf("Syn ikke fundet");
         return 0;
     }
 }
