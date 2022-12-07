@@ -84,7 +84,7 @@ double compareFiles(int row1, int row2, int col1, int col2, char arr1[row1][col1
     int counter = 0, syncounter = 0;
     int j = 0;
 
-    for (int i = 0; i < 8; ++i) // REMOVE PUNCTUATION FROM WORDS BEFORE COMPARING
+    for (int i = 0; i < row1 && i < row2; ++i) // REMOVE PUNCTUATION FROM WORDS BEFORE COMPARING
     {        
         if(ispunct(arr1[i][strlen(arr1[i])-1]) || arr1[i][strlen(arr1[i])-1] == '\n'){
             arr1[i][strlen(arr1[i])-1]= '\0';
