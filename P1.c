@@ -2,9 +2,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
-#include "prototypes.h"
-#include "fileToArr.h"
-#include "plagiat.h"
+#include "Lib/prototypes.h"
+#include "Lib/fileToArr.h"
+#include "Lib/plagiat.h"
 
 int main(void)
 {
@@ -13,9 +13,9 @@ int main(void)
     int col1 = 1, col2 = 1, col3 = 1;
 
     // FILE COMPARE
-    FILE *Test = fopen("t1.txt", "r");
-    FILE *Kontrol = fopen("t2.txt", "r");
-    FILE *SynListe = fopen("SynListe.txt", "r"); // Synonym liste
+    FILE *Test = fopen("InputFiles/t1.txt", "r");
+    FILE *Kontrol = fopen("InputFiles/t2.txt", "r");
+    FILE *SynListe = fopen("InputFiles/SynListe.txt", "r"); // Synonym liste
 
     if (Test == NULL || Kontrol == NULL || SynListe == NULL)
     {
