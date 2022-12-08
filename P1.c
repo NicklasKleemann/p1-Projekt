@@ -52,14 +52,14 @@ void loadSynListe(FILE *file, int row3, int col3, char *arr)
     int line = 0;
     while (!feof(file) && !ferror(file))
     {
-        if (fgets(arr + line * col3, col3+1, file) != NULL)
+        if (fgets(arr + line * col3, col3 + 1, file) != NULL)
         {
             line++;
         }
     }
 }
 
-int SynCheck(char *ord, char *ord2,int row3, int col3, char *SynListe)
+int SynCheck(char *ord, char *ord2, int row3, int col3, char *SynListe)
 {
     int line_number = 0;
     while (strstr(SynListe + line_number * col3, ord) == NULL && line_number < row3)
@@ -76,6 +76,14 @@ int SynCheck(char *ord, char *ord2,int row3, int col3, char *SynListe)
         return 0;
     }
 }
+void removePunct(char *arr, int col, int i)
+{
+    // REMOVE PUNCTUATION FROM WORDS BEFORE COMPARING
+    if (ispunct(*(arr + i * col + strlen(arr + i * col) - 1)) || *(arr + i * col + strlen(arr + i * col) - 1) == '\n')
+    {
+        *(arr + i * col + strlen(arr + i * col) - 1) = '\0';
+    }
+}
 
 double compareFiles(int row1, int row2, int row3, int col1, int col2, int col3, char *arr1, char *arr2, char *Syn)
 {
@@ -83,16 +91,10 @@ double compareFiles(int row1, int row2, int row3, int col1, int col2, int col3, 
     int counter = 0, syncounter = 0;
     int j = 0;
 
-    for (int i = 0; i < row1 && i < row2; ++i) // REMOVE PUNCTUATION FROM WORDS BEFORE COMPARING
+    for (int i = 0; i < row1 && i < row2; ++i) 
     {
-        if (ispunct(*(arr1 + i * col1 + strlen(arr1 + i * col1) -1 )) || *(arr1 + i * col1 + strlen(arr1 + i * col1) -1 ) == '\n')
-        {
-            *(arr1 + i * col1 + strlen(arr1 + i * col1) - 1) = '\0';
-        }
-        if (ispunct(*(arr2 + i * col2 + strlen(arr2 + i * col2) -1 )) || *(arr2 + i * col2 + strlen(arr2 + i * col2) -1 ) == '\n')
-        {
-            *(arr2 + i * col2 + strlen(arr2 + i * col2) - 1) = '\0';
-        }
+        removePunct(arr1, col1, i);
+        removePunct(arr2, col2, i);
 
         if (strcmp(arr1 + i * col1, arr2 + i * col2) == 0) // CHECK SIMILARITY
         {
@@ -137,11 +139,11 @@ void dynamicFileTable(FILE *f, int *rows, int *cols, int isSym)
         }
         c = fgetc(f);
     }
-    //printf("\n%d rows \n%d cols\n", *rows, *cols); //USE FOR DEBUG
+    // printf("\n%d rows \n%d cols\n", *rows, *cols); //USE FOR DEBUG
     rewind(f);
 }
 
-int main(int argc, char **argv)
+int main(void)
 {
     int EOC = 0; // End OF text 1 & 2 and End of comparison.
     int row1 = 1, row2 = 1, row3 = 1;
@@ -162,8 +164,8 @@ int main(int argc, char **argv)
     dynamicFileTable(Kontrol, &row2, &col2, 0);
     dynamicFileTable(SynListe, &row3, &col3, 1);
 
-    char *text1 = malloc(sizeof(char)* row1* col1); // Mængde af ord og max længde på ord
-    char *text2 = malloc(sizeof(char)* row2* col2);
+    char *text1 = malloc(sizeof(char) * row1 * col1); // Mængde af ord og max længde på ord
+    char *text2 = malloc(sizeof(char) * row2 * col2);
     char *Synonymer = malloc(sizeof(char) * row3 * col3);
 
     loadSynListe(SynListe, row3, col3, Synonymer);
