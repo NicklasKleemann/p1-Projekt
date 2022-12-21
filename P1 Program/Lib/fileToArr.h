@@ -4,7 +4,7 @@
 #include <ctype.h>
 
 
-void dynamicFileTable(FILE *f, int *rows, int *cols, int isSym)
+void dynamicFileTable(FILE *f, int *rows, int *cols, int isSyn)
 {
     int counter = 0;
     char c;
@@ -17,12 +17,12 @@ void dynamicFileTable(FILE *f, int *rows, int *cols, int isSym)
             *cols = counter;
         }
 
-        if (isspace(c) && isSym == 0)
+        if (isspace(c) && isSyn == 0)
         {
             counter = 0;
             *rows += 1;
         }
-        if (c == '\n' && isSym == 1)
+        if (c == '\n' && isSyn == 1)
         {
             counter = 0;
             *rows += 1;
