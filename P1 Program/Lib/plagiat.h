@@ -56,17 +56,12 @@ void removePunct(char *arr, int col, int i)
 int SynCheck(char *ord, char *ord2, int row3, int col3, char *SynListe)
 {
     int line_number = 0;
+    // Find "ord" fra Synonymlisten
     while (strstr(SynListe + line_number * col3, ord) == NULL && line_number < row3)
-    { // FIND "ord" FROM SYNLISTE
+    { 
         line_number++;
     }
 
-    if (strstr(SynListe + line_number * col3, ord2) != NULL)
-    { // FIND "ord2" FROM SYNLISTE WHICH MATCHES THE SAME INDEX AS "ord"
-        return 1;
-    }
-    else
-    {
-        return 0;
-    }
+    // Findes "ord2" på matchende indeks af synonymlisten?
+    return (strstr(SynListe + line_number * col3, ord2) != NULL) ? 1 : 0;
 }
