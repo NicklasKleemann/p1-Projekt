@@ -33,7 +33,7 @@ void dynamicFileTable(FILE *f, int *rows, int *cols, int isSym)
     rewind(f);
 }
 
-void loadSynListe(FILE *file, int row3, int col3, char *arr)
+void loadSynListe(FILE *file, int col3, char *arr)
 { // LOAD SYNONYM LIST INTO ARRAY
     int line = 0;
     while (!feof(file) && !ferror(file))
@@ -54,7 +54,7 @@ void ConstructArray(int rows, int cols, FILE *file, char *arr)
         do
         {
             c = fgetc(file);
-            if (isspace(c) || c == EOF) /* Optimering gjort her, uden c == EOF, -0\ i sidste ord og kan derfor ikke bruges som string */
+            if (isspace(c) || c == EOF)
             {
                 if (c == '\n' && j < cols)
                 {

@@ -19,7 +19,7 @@ int main(void)
 
     if (Test == NULL || Kontrol == NULL || SynListe == NULL)
     {
-        perror("FILE ERROR\n");
+        perror("\n");
         exit(-1);
     }
 
@@ -27,11 +27,11 @@ int main(void)
     dynamicFileTable(Kontrol, &row2, &col2, 0);
     dynamicFileTable(SynListe, &row3, &col3, 1);
 
-    char *text1 = malloc(sizeof(char) * row1 * col1); // Mængde af ord og max længde på ord
-    char *text2 = malloc(sizeof(char) * row2 * col2);
-    char *Synonymer = malloc(sizeof(char) * row3 * col3);
+    char *text1 = malloc(sizeof(char) * row1 * col1); // Mængden af ord og max længde på ord
+    char *text2 = malloc(sizeof(char) * row2 * col2); // Mængden af ord og max længde på ord
+    char *Synonymer = malloc(sizeof(char) * row3 * col3); // Mængden af sætninger og max sætningslængde
 
-    loadSynListe(SynListe, row3, col3, Synonymer);
+    loadSynListe(SynListe, col3, Synonymer);
     printf("\n##############################################################################\n");
     ConstructArray(row1, col1, Test, text1);
     printArr(row1, col1, text1, "\nInput text");
